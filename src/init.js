@@ -1,13 +1,7 @@
 import { initialize as ldClientInitialize } from 'launchdarkly-js-client-sdk';
 import camelCase from 'lodash.camelcase';
 import uuid from 'uuid';
-import ip from 'ip';
-import UAParser from 'ua-parser-js';
 import { setFlags as setFlagsAction } from './actions';
-
-const userAgentParser = new UAParser();
-const isMobileDevice = typeof window !== 'undefined' && userAgentParser.getDevice().type === 'mobile';
-const isTabletDevice = typeof window !== 'undefined' && userAgentParser.getDevice().type === 'tablet';
 
 // initialise flags with default values in ld redux store
 const initFlags = (flags, dispatch, useCamelCaseFlagKeys) => {
@@ -45,22 +39,10 @@ const subscribeToChanges = (flags, dispatch, useCamelCaseFlagKeys) => {
 };
 
 const initUser = () => {
-  let device;
-
-  if (isMobileDevice) {
-    device = 'mobile';
-  } else if (isTabletDevice) {
-    device = 'tablet';
-  } else {
-    device = 'desktop';
-  }
-
   return {
     key: uuid.v4(),
-    ip: ip.address(),
     custom: {
-      browser: userAgentParser.getResult().browser.name,
-      device,
+      device: 'mobile',
     },
   };
 };
